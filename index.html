@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#182d46" />
+  <meta name="description" content="Решай головоломки по электростатике, строя векторы с привязкой к узлам сетки." />
+  <title>Задачи на построение по электростатике</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="34" height="34"><path d="M8 31V9M8 31H31" stroke="currentColor" stroke-width="2" opacity=".55"/><path d="M8 31L29 11" stroke="#ffd06b" stroke-width="3" stroke-linecap="round"/><path d="M22 11H29V18" stroke="#ffd06b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="3.5" fill="currentColor"/></svg>
+        </div>
+        <div><div class="brand-name">Задачи на построение по электростатике</div><div class="brand-subtitle">Головоломки по физике</div></div>
+      </div>
+      <div class="header-progress"><span>Пройдено уровней</span><strong id="progressCount">0 из 11</strong><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
+    </header>
+
+    <main class="game-layout">
+      <section class="workspace" aria-label="Поле для построения векторов">
+        <div class="workspace-top">
+          <div class="eyebrow" id="levelKicker">УРОВЕНЬ 01</div>
+        </div>
+        <div class="board-wrap">
+          <svg id="board" viewBox="0 0 800 500" role="img" aria-label="Схема с зарядами. Тяните вектор из выделенного заряда Q к узлу сетки." tabindex="0">
+            <defs>
+              <marker id="arrow-force" viewBox="0 0 14 14" refX="12" refY="7" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><path d="M2 3.5L12 7L2 10.5" fill="none" stroke="#367cc9" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></marker>
+              <marker id="arrow-draft" viewBox="0 0 14 14" refX="12" refY="7" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><path d="M2 3.5L12 7L2 10.5" fill="none" stroke="#0a92a3" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></marker>
+              <marker id="arrow-result" viewBox="0 0 14 14" refX="12" refY="7" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><path d="M2 3.5L12 7L2 10.5" fill="none" stroke="#e36848" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></marker>
+            </defs>
+            <g id="gridLayer"></g>
+            <g id="diagramLayer"></g>
+            <g id="chargesLayer"></g>
+            <g id="arrowsLayer" pointer-events="none"></g>
+            <g id="cursorLayer"></g>
+          </svg>
+          <div class="board-instruction"><span class="instruction-symbol">✳</span><span id="boardInstruction">Нарисуй силу, с которой −q действует на Q</span></div>
+        </div>
+        <div class="workspace-footer"><div class="footer-note"><span class="mouse-icon" aria-hidden="true"></span> Зажми у Q и потяни к узлу сетки</div><button id="resetButton" class="text-button" type="button">Начать уровень заново</button></div>
+      </section>
+
+      <aside class="sidebar" aria-label="Управление задачей">
+        <div class="sidebar-content">
+          <div class="task-intro">
+          <div class="eyebrow sidebar-kicker">ТВОЯ ЗАДАЧА</div>
+          <h2 id="taskTitle">Построй силы</h2>
+          <p class="task-goal">Найди <strong>равнодействующую (суммарную) силу</strong>, действующую на заряд <strong class="target-letter">Q</strong>.</p>
+          <p class="task-description" id="taskDescription">Построй векторы сил, действующих на заряд Q, а затем сложи их.</p>
+          <details class="how-to-play">
+            <summary>Как играть</summary>
+            <ol>
+              <li>Начни с заряда, <strong>обведённого пунктиром</strong>: сначала нужно построить силу, с которой он действует на Q.</li>
+              <li>Каждую стрелку начинай <strong>из точки Q</strong>: зажми Q и тяни к узлу сетки. <strong>Первая сила может быть любой длины</strong> — она задаёт масштаб.</li>
+              <li>После <strong>каждой</strong> стрелки нажимай <strong>«Проверить построение»</strong>. Для следующих сил учитывай направление притяжения или отталкивания и соотношение длин по закону Кулона.</li>
+              <li>Когда построишь все силы, <strong>сложи векторы</strong> по правилу параллелограмма или многоугольника. Проведи результирующую стрелку из Q и снова нажми <strong>«Проверить построение»</strong>.</li>
+            </ol>
+          </details>
+          </div>
+          <div class="task-actions">
+          <div class="stepper"><div class="step active" id="stepOne"><span class="step-num">1</span><span>Силы зарядов</span></div><div class="step-divider"></div><div class="step" id="stepTwo"><span class="step-num">2</span><span>Равнодействующая</span></div></div>
+          <div id="forceList" class="force-list"></div>
+          <div class="feedback" id="feedback" aria-live="polite"><span class="feedback-icon">i</span><span id="feedbackText">Выбери вектор и построй его на поле.</span></div>
+          <div class="button-stack">
+            <button id="checkButton" class="primary-button" type="button">Проверить построение</button>
+            <button id="hintButton" class="secondary-button" type="button"><span aria-hidden="true">✦</span> Подсказка</button>
+          </div>
+          <div class="success-panel" id="successPanel" hidden><div class="success-icon">✓</div><strong>Уровень пройден!</strong><p id="successText"></p><button class="primary-button" id="nextButton" type="button">Следующий уровень</button></div>
+          </div>
+        </div>
+        <div class="level-menu"><div class="level-menu-heading">УРОВНИ <span>Выбери любой</span></div><div class="level-buttons" id="levelButtons"></div></div>
+      </aside>
+    </main>
+    <footer class="page-footer"><span>Интерактивный прототип · Закон Кулона и сложение векторов</span><span>Без оценок и таймера — можно спокойно пробовать</span></footer>
+  </div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
